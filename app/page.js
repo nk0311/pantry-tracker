@@ -1,7 +1,7 @@
 'use client'
 import {Box, Stack, Typography, Button, Modal, TextField} from '@mui/material'
 import {firestore} from '@/firebase'
-import {collection, doc, query, getDocs, setDoc} from 'firebase/firestore'
+import {collection, doc, query, getDocs, setDoc, deleteDoc, addDoc} from 'firebase/firestore'
 import {useEffect, useState} from 'react'
 
 const style = {
@@ -43,9 +43,15 @@ export default function Home() {
     updatePantry()
   }, [])
 
-  const AddItem = async (item) => {
+  const addItem = async (item) => {
     const docRef = doc(collection(firestore, 'pantry'), item)
     await setDoc(docRef, {})
+    updatePantry()
+  }
+
+  const removeItem = async (item) => {
+    const docRef = doc(collection(firestore, 'pantry'), item)
+    deleteDoc(docRef)
     updatePantry()
   }
   return (
@@ -79,7 +85,7 @@ export default function Home() {
         />
         <Button variant="outlined"
         onClick={() => {
-          AddItem(itemName)
+          addItem(itemName)
           setItemName('')
           handleClose()
         }}
@@ -123,9 +129,10 @@ export default function Home() {
             width="100%"
             minHeight="150px"
             display={'flex'}
-            justifyContent={'center'}
+            justifyContent={'space-between'}
             alignItems={'center'}
             bgcolor={'#f0f0f0'}
+            paddingX={5}
           >
             <Typography
               variant={'h3'}
@@ -137,6 +144,8 @@ export default function Home() {
                 i.charAt(0).toUpperCase() + i.slice(1)
               }
             </Typography>
+   
+          <Button variant="outlined" onClick={() => removeItem(i)}>Remove</Button>
           </Box>
         ))}
        
