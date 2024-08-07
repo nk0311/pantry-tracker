@@ -1,7 +1,7 @@
 'use client'
-import {Box, Stack, Typography, Button, Modal} from '@mui/material'
+import {Box, Stack, Typography, Button, Modal, TextField} from '@mui/material'
 import {firestore} from '@/firebase'
-import {collection, query, getDocs} from 'firebase/firestore'
+import {collection, doc, query, getDocs, setDoc} from 'firebase/firestore'
 import {useEffect, useState} from 'react'
 
 const style = {
@@ -14,6 +14,9 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 3,
 };
 
 export default function Home() {
@@ -23,20 +26,28 @@ export default function Home() {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
-  useEffect( () => {
-    const updatePantry = async () => {
-      const snapshot = query(collection(firestore, 'pantry'))
-      const docs = await getDocs(snapshot)
-      const pantryList = []
-      docs.forEach((doc) => {
-        pantryList.push(doc.id)
-      })
-      console.log(pantryList)
-      setPantry(pantryList)
+  const [itemName, setItemName] = useState('')
 
-    }
+  const updatePantry = async () => {
+    const snapshot = query(collection(firestore, 'pantry'))
+    const docs = await getDocs(snapshot)
+    const pantryList = []
+    docs.forEach((doc) => {
+      pantryList.push(doc.id)
+    })
+    console.log(pantryList)
+    setPantry(pantryList)
+  }
+
+  useEffect( () => {
     updatePantry()
   }, [])
+
+  const AddItem = async (item) => {
+    const docRef = doc(collection(firestore, 'pantry'), item)
+    await setDoc(docRef, {})
+    updatePantry()
+  }
   return (
     <Box 
       width="100vh" 
@@ -57,6 +68,25 @@ export default function Home() {
     <Typography id="modal-modal-title" variant="h6" component="h2">
       Add Item
     </Typography>
+    <Stack width="100%" direction={"row"} spacing={2}>
+        <TextField 
+          id="outlined-basic" 
+          label="Item" 
+          variant="outlined"
+          fullWidth
+          value={itemName}
+          onChange={(e) => setItemName(e.target.value)}
+        />
+        <Button variant="outlined"
+        onClick={() => {
+          AddItem(itemName)
+          setItemName('')
+          handleClose()
+        }}
+        >
+          Add
+        </Button>
+    </Stack>
   </Box>
 </Modal>
       <Button variant="contained" onClick={handleOpen}>
@@ -77,6 +107,8 @@ export default function Home() {
         <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
           Pantry Items
         </Typography>
+
+
       </Box>
       <Stack 
         width = "800px" 
