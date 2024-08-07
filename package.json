@@ -12,6 +12,7 @@
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@firebase/logger": "^0.4.2",
+    "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.6",
     "firebase": "^9.23.0",
     "next": "14.2.5",
