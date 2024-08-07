@@ -58,10 +58,18 @@ export default function Home() {
 
   const removeItem = async (item) => {
     const docRef = doc(collection(firestore, 'pantry'), item)
-    await deleteDoc(docRef)
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+      const {count} = docSnap.data()
+      if (count === 1) {
+        await deleteDoc(docRef)
+      } else {
+        await setDoc(docRef, {count: count - 1})
+      }
+    }
     await updatePantry()
-
   }
+  
   return (
     <Box 
       width="100vh" 
