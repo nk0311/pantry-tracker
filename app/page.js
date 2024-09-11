@@ -142,7 +142,7 @@ export default function Home() {
       >
         <Box display="flex" alignItems="center" justifyContent="center">
           <Typography variant="h3" sx={{ flexGrow: 1 }}>
-            Pantry Management
+            Pantry Managemen
           </Typography>
           <IconButton onClick={colorMode.toggleColorMode} color="inherit">
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
